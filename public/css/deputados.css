@@ -1,0 +1,54 @@
+/* cor principal #2cc762 botão #2cc76a */
+
+.card {
+    border: 1px solid #e3e6ea;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}
+
+.card-header {
+    background-color: #2cc762;
+    padding: 10px 15px; 
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #dde2e6;
+}
+
+.card-header small {
+    color: #777;
+}
+
+.deputado-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    object-position: center 20%;
+    border-radius: 50%;
+    margin-right: 15px;
+    border: 2px solid #dee2e6;
+}
+
+.badge {
+    font-size: 0.75rem;
+    margin-left: 5px;
+}
+
+.botaoVerMais {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    background: linear-gradient(135deg, #6d9eff, #6093ee);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 0.9rem;
+    margin: 20px 0px 0;
+    opacity: 0.9;
+    transition: opacity 0.3 ease;
+}
+
+.botaoVerMais:hover {
+    opacity: 1;
+}
