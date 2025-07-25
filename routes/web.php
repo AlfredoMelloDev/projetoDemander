@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DeputadoController;
 use App\Jobs\SincronizarDeputadosJob;
+use App\Http\Controllers\SituacaoController;
+use App\Http\Controllers\OrgaoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,3 +22,7 @@ Route::get('/sincronizar-deputados', function () {
 
 
 Route::get('/deputados/{id}', [DeputadoController::class, 'show'])->name('deputados.show');
+
+
+Route::get('/deputados/{id}/importar-orgaos', [OrgaoController::class, 'importar']);
+Route::get('/importar-situacoes', [SituacaoController::class, 'importar']);

@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Deputado;
+use App\Models\Situacao;
 
 class SincronizarDeputadosJob implements ShouldQueue
 {
@@ -17,9 +18,6 @@ class SincronizarDeputadosJob implements ShouldQueue
 
     protected array $filtros;
 
-    /**
-     * Criar a Job com filtros opcionais (ex: ['siglaUf' => 'SP', 'siglaPartido' => 'PT'])
-     */
     public function __construct(array $filtros = [])
     {
         $this->filtros = $filtros;
@@ -27,10 +25,8 @@ class SincronizarDeputadosJob implements ShouldQueue
 
     public function handle()
     {
-        // Monta URL base
         $url = 'https://dadosabertos.camara.leg.br/api/v2/deputados';
 
-        // Faz a requisição com os filtros passados
         $response = Http::get($url, $this->filtros);
 
         if ($response->failed()) {
@@ -46,17 +42,24 @@ class SincronizarDeputadosJob implements ShouldQueue
             if ($detalhes->successful()) {
                 $dados = $detalhes->json()['dados'];
 
+                // 🔧 NOVO: buscar a situação correspondente no banco
+                $situacao = Situacao::where('descricao', $dados['situacao'])->first();
+
+                // 🔧 MODIFICADO: incluímos situacao_id no updateOrCreate
                 Deputado::updateOrCreate(
                     ['deputado_id' => $dados['id']],
                     [
-                        'nome'     => $dados['ultimoStatus']['nome']  ?? null,
-                        'partido'  => $dados['ultimoStatus']['siglaPartido'] ?? null,
-                        'estado'   => $dados['ultimoStatus']['siglaUf'] ?? null,
-                        'email'    => $dados['ultimoStatus']['gabinete']['email'] ?? null,
-                        'telefone' => $dados['ultimoStatus']['gabinete']['telefone'] ?? null,
-                        'foto'     => $dados['ultimoStatus']['urlFoto'] ?? null,
-                        'sigla_sexo' => $dados['sexo']['sexo'] ?? null,
-                        'data_despesa' => $dados['data_despesa'] ?? null,    
+                        'nome'         => $dados['ultimoStatus']['nome'] ?? null,
+                        'partido'      => $dados['ultimoStatus']['siglaPartido'] ?? null,
+                        'estado'       => $dados['ultimoStatus']['siglaUf'] ?? null,
+                        'email'        => $dados['ultimoStatus']['gabinete']['email'] ?? null,
+                        'telefone'     => $dados['ultimoStatus']['gabinete']['telefone'] ?? null,
+                        'foto'         => $dados['ultimoStatus']['urlFoto'] ?? null,
+                        'sigla_sexo'   => $dados['sexo']['sexo'] ?? null,
+                        'data_despesa' => $dados['data_despesa'] ?? null,
+
+                        // ✅ Salva o relacionamento
+                        'situacao_id'  => $situacao?->id,
                     ]
                 );
             } else {
