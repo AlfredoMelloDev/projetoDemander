@@ -13,10 +13,22 @@ return new class extends Migration
     {
         Schema::create('deputados', function (Blueprint $table) {
             $table->id();
-            $table->integer('deputado_id')->unique();
+            $table->unsignedBigInteger('deputado_id')->unique(); // Corrigido aqui
             $table->string('nome');
             $table->string('sigla_partido');
             $table->string('sigla_uf');
+            $table->string('sigla_sexo')->nullable();
+            $table->string('email')->nullable();
+            $table->string('telefone')->nullable();
+            $table->string('uri')->nullable();
+            $table->date('data_nascimento')->nullable();
+            $table->string('municipio_nascimento')->nullable();
+            $table->string('uf_nascimento')->nullable();
+            $table->json('rede_social')->nullable();
+            $table->string('url_website')->nullable();
+            $table->string('condicao_eleitoral')->nullable();
+            $table->string('situacao')->nullable();
+            $table->string('descricao_status')->nullable();
             $table->timestamps();
         });
     }

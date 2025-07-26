@@ -41,7 +41,7 @@ class SincronizarDespesasDeputadoJob implements ShouldQueue
         }
 
         // Faz a requisição para API de despesas do deputado
-        $response = Http::get("https://dadosabertos.camara.leg.br/api/v2/deputados/{$this->idDeputadoApi}/despesas");
+        $response = Http::withOptions(['verify' => false])->get("https://dadosabertos.camara.leg.br/api/v2/deputados/{$this->idDeputadoApi}/despesas");
 
         if ($response->successful()) {
             $despesas = $response->json('dados');

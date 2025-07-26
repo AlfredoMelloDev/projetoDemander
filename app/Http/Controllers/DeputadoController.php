@@ -13,17 +13,17 @@ class DeputadoController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Deputado::query();
+        $query = Deputado::with('despesas');
 
         if ($request->filled('nome')) {
             $query->where('nome', 'like', '%' . $request->nome . '%');
         }
 
-        // Ordenação por ID adicionada
         $deputados = $query->orderBy('id')->paginate(10);
 
         return view('deputados.index', compact('deputados'));
     }
+
 
     /**
      * Método para iniciar a sincronização dos deputados (dispara o job).
@@ -42,3 +42,4 @@ class DeputadoController extends Controller
         return view('deputados.show', compact('deputado'));
     }
 }
+

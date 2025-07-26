@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Deputado;
 use App\Models\Situacao;
+use UConverter;
 
 class SincronizarDeputadosJob implements ShouldQueue
 {
@@ -27,7 +28,7 @@ class SincronizarDeputadosJob implements ShouldQueue
     {
         $url = 'https://dadosabertos.camara.leg.br/api/v2/deputados';
 
-        $response = Http::get($url, $this->filtros);
+        $response = Http::withOptions(['verify' => false])->get($url, $this->filtros);
 
         if ($response->failed()) {
             Log::error('Erro ao buscar deputados na API', ['url' => $url, 'filtros' => $this->filtros]);
@@ -37,13 +38,22 @@ class SincronizarDeputadosJob implements ShouldQueue
         $deputados = $response->json()['dados'];
 
         foreach ($deputados as $item) {
-            $detalhes = Http::get($item['uri']);
+            $detalhes = Http::withOptions(['verify' => false])->get($item['uri']);
 
             if ($detalhes->successful()) {
                 $dados = $detalhes->json()['dados'];
 
+                echo json_encode($dados);
+                $detected_encoding = mb_detect_encoding($dados['ultimoStatus']['situacao']);
+                echo "Detected encoding (default order): " . $detected_encoding . "\n";
+
+
+
+
+
+
                 // 🔧 NOVO: buscar a situação correspondente no banco
-                $situacao = Situacao::where('descricao', $dados['situacao'])->first();
+                $situacao = Situacao::where('descricao', $dados['ultimoStatus']['situacao'])->first();
 
                 // 🔧 MODIFICADO: incluímos situacao_id no updateOrCreate
                 Deputado::updateOrCreate(
@@ -67,6 +77,9 @@ class SincronizarDeputadosJob implements ShouldQueue
             }
         }
 
+
+
+        
         Log::info('Deputados sincronizados com sucesso.', ['filtros' => $this->filtros]);
     }
 }

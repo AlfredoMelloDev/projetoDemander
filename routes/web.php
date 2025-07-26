@@ -1,14 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DeputadoController;
-use App\Jobs\SincronizarDeputadosJob;
-use App\Http\Controllers\SituacaoController;
 use App\Http\Controllers\OrgaoController;
+use App\Http\Controllers\SituacaoController;
+use App\Jobs\SincronizarDeputadosJob;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/', [DeputadoController::class, 'index'])->name('deputados.index');
 Route::get('/sincronizar', [DeputadoController::class, 'sincronizar'])->name('deputados.sincronizar');

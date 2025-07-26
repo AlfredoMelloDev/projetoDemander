@@ -10,7 +10,7 @@ class Deputado extends Model
     use HasFactory;
 
     protected $fillable = [
-        'deputado_id',
+        'despesas_id',
         'nome',
         'sigla_partido',
         'sigla_uf',
@@ -25,6 +25,6 @@ class Deputado extends Model
      */
     public function despesas()
     {
-        return $this->hasMany(\App\Models\Despesa::class, 'deputado_id', 'id');
+        return $this->hasMany(\App\Models\Despesa::class, 'deputado_id', 'deputado_id');
     }
 }

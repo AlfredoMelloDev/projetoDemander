@@ -13,12 +13,21 @@ return new class extends Migration
     {
         Schema::create('despesas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('deputado_id')->constrained()->onDelete('cascade');
+
+            // FK para deputados.deputado_id (precisa ser unsignedBigInteger, igual na tabela deputados)
+            $table->unsignedBigInteger('deputado_id');
+
             $table->string('tipo_despesa');
-            $table->decimal('valor_liquido', 10, 2);
+            $table->decimal('valor', 10, 2);
             $table->string('fornecedor');
             $table->date('data_despesa');
             $table->timestamps();
+
+            // Chave estrangeira corrigida
+            $table->foreign('deputado_id')
+                ->references('deputado_id')
+                ->on('deputados')
+                ->onDelete('cascade');
         });
     }
 
